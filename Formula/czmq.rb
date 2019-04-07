@@ -31,7 +31,7 @@ class Czmq < Formula
 
   depends_on "zeromq"
 
-  depends_on "libcurl" if build.with? "curl"
+  depends_on "curl" if build.with? "curl"
   depends_on "libmicrohttpd" if build.with? "microhttpd"
   depends_on "lz4" if build.with? "lz4"
 
