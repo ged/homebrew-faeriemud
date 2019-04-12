@@ -20,11 +20,15 @@ class Zeromq < Formula
     depends_on "libtool" => :build
   end
 
+  option "with-drafts", "Build and install draft classes and methods"
+  option "with-norm", "Build with support for the NORM transport"
+
   depends_on "asciidoc" => :build
   depends_on "pkg-config" => [:build, :test]
   depends_on "xmlto" => :build
 
   depends_on "libsodium"
+  depends_on "norm" if build.with? "norm"
 
   def install
     # Work around "error: no member named 'signbit' in the global namespace"
@@ -38,8 +42,12 @@ class Zeromq < Formula
     # Disable libunwind support due to pkg-config problem
     # https://github.com/Homebrew/homebrew-core/pull/35940#issuecomment-454177261
 
+	args = ["--disable-dependency-tracking", "--prefix=#{prefix}"]
+	args << "--enable-drafts" if build.with? "drafts"
+	args << "--with-norm" if build.with? "norm"
+
     system "./autogen.sh" if build.head?
-    system "./configure", "--enable-drafts", "--disable-dependency-tracking", "--prefix=#{prefix}"
+    system "./configure", *args
     system "make"
     system "make", "install"
   end
