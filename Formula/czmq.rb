@@ -42,8 +42,8 @@ class Czmq < Formula
 
     args << "--enable-drafts" if build.with? "drafts"
     args << "--enable-liblz4" if build.with? "lz4"
-    args << "--enable-libcurl" if build.with? "libcurl"
-    args << "--enable-libmicrohttpd" if build.with? "libmicrohttpd"
+    args << "--enable-libcurl" if build.with? "curl"
+    args << "--enable-libmicrohttpd" if build.with? "microhttpd"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args
