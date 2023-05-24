@@ -5,12 +5,6 @@ class Zeromq < Formula
   sha256 "bcbabe1e2c7d0eec4ed612e10b94b112dd5f06fcefa994a0c79a45d835cd21eb"
   revision 1
 
-  bottle do
-    sha256 "f5837a7056c827b6fbe3b7758f87d78969ff01e5f91ece40050d58a2762ccca5" => :mojave
-    sha256 "c520b34c98300a0b591559376b841050bc4f9d011392d8cebeb02f670de47fc0" => :high_sierra
-    sha256 "7fbd2a2be3dcf6e83760627d0e1327dacebb9b39359d729438dd2468fe3b89e0" => :sierra
-  end
-
   head do
     url "https://github.com/zeromq/libzmq.git"
 
