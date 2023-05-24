@@ -18,7 +18,7 @@ class Zeromq < Formula
   depends_on "xmlto" => :build
 
   depends_on "libsodium"
-  depends_on "norm" if build.with? "norm"
+  depends_on "norm"
 
   def install
     # Work around "error: no member named 'signbit' in the global namespace"

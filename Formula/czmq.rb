@@ -18,9 +18,9 @@ class Czmq < Formula
 
   depends_on "zeromq"
 
-  depends_on "curl" if build.with? "curl"
-  depends_on "libmicrohttpd" if build.with? "microhttpd"
-  depends_on "lz4" if build.with? "lz4"
+  depends_on "curl"
+  depends_on "libmicrohttpd"
+  depends_on "lz4"
 
   def install
     ENV["XML_CATALOG_FILES"] = "#{etc}/xml/catalog"
