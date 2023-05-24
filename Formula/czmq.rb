@@ -12,11 +12,6 @@ class Czmq < Formula
     depends_on "libtool" => :build
   end
 
-  option "with-drafts", "Build and install draft classes and methods"
-  option "with-lz4", "Build with lz4 support"
-  option "with-curl", "Build with libcurl (ZHTTP client) support"
-  option "with-microhttpd", "Build with libmicrohttpd (ZHTTP server) support"
-
   depends_on "asciidoc" => :build
   depends_on "pkg-config" => :build
   depends_on "xmlto" => :build
@@ -32,10 +27,10 @@ class Czmq < Formula
 
     args = ["--disable-dependency-tracking", "--prefix=#{prefix}"]
 
-    args << "--enable-drafts" if build.with? "drafts"
-    args << "--enable-liblz4" if build.with? "lz4"
-    args << "--enable-libcurl" if build.with? "curl"
-    args << "--enable-libmicrohttpd" if build.with? "microhttpd"
+    args << "--enable-drafts"
+    args << "--enable-liblz4"
+    args << "--enable-libcurl"
+    args << "--enable-libmicrohttpd"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args
