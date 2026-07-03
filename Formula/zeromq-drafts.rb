@@ -1,26 +1,24 @@
-class Zeromq < Formula
-  desc "High-performance, asynchronous messaging library"
-  homepage "http://www.zeromq.org/"
-  url "https://github.com/zeromq/libzmq/releases/download/v4.3.1/zeromq-4.3.1.tar.gz"
-  sha256 "bcbabe1e2c7d0eec4ed612e10b94b112dd5f06fcefa994a0c79a45d835cd21eb"
-  revision 1
+class ZeromqDrafts < Formula
+  desc "High-performance, asynchronous messaging library (with drafts option)"
+  homepage "https://zeromq.org/"
+  url "https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz"
+  sha256 "6653ef5910f17954861fe72332e68b03ca6e4d9c7160eb3a8de5a5a913bfab43"
+  license "MPL-2.0"
 
-  bottle do
-    cellar :any
-    sha256 "f5837a7056c827b6fbe3b7758f87d78969ff01e5f91ece40050d58a2762ccca5" => :mojave
-    sha256 "c520b34c98300a0b591559376b841050bc4f9d011392d8cebeb02f670de47fc0" => :high_sierra
-    sha256 "7fbd2a2be3dcf6e83760627d0e1327dacebb9b39359d729438dd2468fe3b89e0" => :sierra
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
   head do
-    url "https://github.com/zeromq/libzmq.git"
+    url "https://github.com/zeromq/libzmq.git", branch: "master"
 
     depends_on "autoconf" => :build
     depends_on "automake" => :build
     depends_on "libtool" => :build
   end
 
-  option "with-drafts", "Build and install draft classes and methods"
+  option "without-drafts", "Disable draft classes and methods"
   option "with-norm", "Build with support for the NORM transport"
 
   depends_on "asciidoc" => :build
@@ -28,7 +26,9 @@ class Zeromq < Formula
   depends_on "xmlto" => :build
 
   depends_on "libsodium"
-  depends_on "norm" if build.with? "norm"
+  depends_on "norm" => :optional
+
+  conflicts_with "zeromq", because: "it is the same library, but with drafts as an option"
 
   def install
     # Work around "error: no member named 'signbit' in the global namespace"
@@ -42,9 +42,9 @@ class Zeromq < Formula
     # Disable libunwind support due to pkg-config problem
     # https://github.com/Homebrew/homebrew-core/pull/35940#issuecomment-454177261
 
-	args = ["--disable-dependency-tracking", "--prefix=#{prefix}"]
-	args << "--enable-drafts" if build.with? "drafts"
-	args << "--with-norm" if build.with? "norm"
+    args = ["--disable-dependency-tracking", "--prefix=#{prefix}", "--with-libsodium"]
+    args << "--enable-drafts" if build.with? "drafts"
+    args << "--with-norm" if build.with? "norm"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args

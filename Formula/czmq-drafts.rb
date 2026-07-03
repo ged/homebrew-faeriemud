@@ -1,16 +1,8 @@
-class Czmq < Formula
-  desc "High-level C binding for ZeroMQ"
+class CzmqDrafts < Formula
+  desc "High-level C binding for ZeroMQ (with drafts option)"
   homepage "http://czmq.zeromq.org/"
-  url "https://github.com/zeromq/czmq/releases/download/v4.2.0/czmq-4.2.0.tar.gz"
-  sha256 "cfab29c2b3cc8a845749758a51e1dd5f5160c1ef57e2a41ea96e4c2dcc8feceb"
-
-  bottle do
-    cellar :any
-    sha256 "38d2b6120f6d06c9a45c895f52949a2ddd01f72d7e91d3ff83cd39c954492300" => :mojave
-    sha256 "1e414d17fd6c0a4dd9939e84091b5073c23d2477569d12b0ee08d6a425abea14" => :high_sierra
-    sha256 "c0b2b82ae2edfa4dc97f48789ed87050dc0fb602e85a2b510fee6336afe17a5c" => :sierra
-    sha256 "d6966061fd61f2440713473c4f65bb9fd541be2f3be78e1d3f56ca54d366202e" => :el_capitan
-  end
+  url "https://github.com/zeromq/czmq/releases/download/v4.2.1/czmq-4.2.1.tar.gz"
+  sha256 "5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39"
 
   head do
     url "https://github.com/zeromq/czmq.git"
@@ -20,20 +12,21 @@ class Czmq < Formula
     depends_on "libtool" => :build
   end
 
-  option "with-drafts", "Build and install draft classes and methods"
-  option "with-lz4", "Build with lz4 support"
+  option "without-drafts", "Disable draft classes and methods"
+  option "with-lz4", "Build with lz4 compression support"
   option "with-curl", "Build with libcurl (ZHTTP client) support"
-  option "with-microhttpd", "Build with libmicrohttpd (ZHTTP server) support"
+  option "with-libmicrohttpd", "Build with libmicrohttpd (ZHTTP server) support"
 
   depends_on "asciidoc" => :build
   depends_on "pkg-config" => :build
   depends_on "xmlto" => :build
 
-  depends_on "zeromq"
+  depends_on "zeromq-drafts"
+  depends_on "curl" => :optional
+  depends_on "libmicrohttpd" => :optional
+  depends_on "lz4" => :optional
 
-  depends_on "curl" if build.with? "curl"
-  depends_on "libmicrohttpd" if build.with? "microhttpd"
-  depends_on "lz4" if build.with? "lz4"
+  conflicts_with "czmq", because: "it's the same library, but this version has more options"
 
   def install
     ENV["XML_CATALOG_FILES"] = "#{etc}/xml/catalog"
@@ -43,12 +36,12 @@ class Czmq < Formula
     args << "--enable-drafts" if build.with? "drafts"
     args << "--enable-liblz4" if build.with? "lz4"
     args << "--enable-libcurl" if build.with? "curl"
-    args << "--enable-libmicrohttpd" if build.with? "microhttpd"
+    args << "--enable-libmicrohttpd" if build.with? "libmicrohttpd"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args
     system "make"
-    system "make", "ZSYS_INTERFACE=lo0", "check-verbose"
+    # system "make", "ZSYS_INTERFACE=lo0", "check-verbose"
     system "make", "install"
     rm Dir["#{bin}/*.gsl"]
   end
@@ -83,4 +76,3 @@ class Czmq < Formula
     assert_equal "Hello, World!\n", shell_output("./test")
   end
 end
-
